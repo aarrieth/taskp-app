@@ -2,11 +2,19 @@ const { Router } = require("express");
 const db = require("../database");
 const router = Router();
 
-router.get("/", (req, res) => {
-  console.log(db);
+router.get("/", async (req, res) => {
   res.json({
-    message: "Getting all data",
+    message: "Welcome",
+    "Get all taks": "http://localhost:3030/task",
+    "Get an unique taks": "http://localhost:3030/task/:id",
   });
+});
+
+router.get("/task", async (req, res) => {
+  await db.connect();
+  const result = await db.query("SELECT * FROM task");
+  res.json(result.rows[0]);
+  await db.end();
 });
 
 router.get("/task/:id", (req, res) => {
