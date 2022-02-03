@@ -1,6 +1,6 @@
-const db = require("../database");
+const db = require("../database/connection");
 
-const getAllTasks = async (req, res) => {
+const getAllTasks = async (req, res, next) => {
   try {
     const result = await db.query("SELECT * FROM task");
     if (result.rows.length === 0)
@@ -9,13 +9,11 @@ const getAllTasks = async (req, res) => {
       });
     res.json(result.rows);
   } catch (error) {
-    res.json({
-      message: error.message,
-    });
+    next(error);
   }
 };
 
-const getAnUniqueTasks = async (req, res) => {
+const getAnUniqueTasks = async (req, res, next) => {
   try {
     const { id } = req.params;
     const result = await db.query("SELECT * FROM task WHERE id = $1", [id]);
@@ -23,13 +21,11 @@ const getAnUniqueTasks = async (req, res) => {
       return res.status(404).json({ message: "Task not found" });
     res.json(result.rows);
   } catch (error) {
-    res.json({
-      message: error.message,
-    });
+    next(error);
   }
 };
 
-const createTask = async (req, res) => {
+const createTask = async (req, res, next) => {
   try {
     const { title, description } = req.body;
     const payload = await db.query(
@@ -38,13 +34,11 @@ const createTask = async (req, res) => {
     );
     res.json(payload.rows[0]);
   } catch (error) {
-    res.json({
-      Error: error.message,
-    });
+    next(error);
   }
 };
 
-const updateAnUniqueTasks = async (req, res) => {
+const updateAnUniqueTasks = async (req, res, next) => {
   try {
     const { id } = req.params;
     const { title, description } = req.body;
@@ -60,11 +54,11 @@ const updateAnUniqueTasks = async (req, res) => {
 
     res.json(result.rows);
   } catch (error) {
-    console.log(error.message);
+    next(error);
   }
 };
 
-const deleteAnUniqueTasks = async (req, res) => {
+const deleteAnUniqueTasks = async (req, res, next) => {
   try {
     const { id } = req.params;
     const result = await db.query("DELETE FROM task WHERE id = $1", [id]);
@@ -72,9 +66,7 @@ const deleteAnUniqueTasks = async (req, res) => {
       return res.status(404).json({ message: "Task not found" });
     res.sendStatus(204);
   } catch (error) {
-    res.json({
-      message: error.message,
-    });
+    next(error);
   }
 };
 
