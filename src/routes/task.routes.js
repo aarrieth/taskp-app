@@ -1,44 +1,22 @@
 const { Router } = require("express");
-const db = require("../database");
+const {
+  getAllTasks,
+  getAnUniqueTasks,
+  createTask,
+  updateAnUniqueTasks,
+  deleteAnUniqueTasks,
+} = require("../controllers/task.controllers");
+
 const router = Router();
 
-router.get("/", async (req, res) => {
-  res.json({
-    message: "Welcome",
-    "Get all taks": "http://localhost:3030/task",
-    "Get an unique taks": "http://localhost:3030/task/:id",
-  });
-});
+router.get("/", getAllTasks);
 
-router.get("/task", async (req, res) => {
-  await db.connect();
-  const result = await db.query("SELECT * FROM task");
-  res.json(result.rows[0]);
-  await db.end();
-});
+router.get("/task/:id", getAnUniqueTasks);
 
-router.get("/task/:id", (req, res) => {
-  res.json({
-    message: "getting data of an unique task",
-  });
-});
+router.post("/task", createTask);
 
-router.post("/task", (req, res) => {
-  res.json({
-    message: "Sending data",
-  });
-});
+router.put("/task/:id", updateAnUniqueTasks);
 
-router.put("task/:id", (req, res) => {
-  res.json({
-    message: "Updating data of an unique task",
-  });
-});
-
-router.delete("/task/:id", (req, res) => {
-  res.json({
-    message: "Deleting data!!!",
-  });
-});
+router.delete("/task/:id", deleteAnUniqueTasks);
 
 module.exports = router;

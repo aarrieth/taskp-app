@@ -3,11 +3,12 @@ const morgan = require("morgan");
 
 const taskRouter = require("./routes/task.routes");
 
-const PORT = 3030;
+const PORT = 4040;
 
 const app = express();
 
 app.use(morgan("dev"));
+app.use(express.json());
 
 //task router to get endpoints
 app.use(taskRouter);
